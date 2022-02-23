@@ -521,16 +521,23 @@ def convert_wgs_to_utm(csv_file,lon: float, lat: float):
     return epsg_code
 
 
-def main(csv_file,option,dx_perc_overlap,
+def main(array,option,dx_perc_overlap,
                  dy_perc_overlap,cm_per_pixel,battery_time,
                  flight_speed,hovering_time,heading,home_side,
                  res_x,res_y,fov):
 
     print('csv_file',csv_file.name)
     
-    points = read_csv(csv_file.name)
-
-    shape_file = csv_file.name.replace('.csv','.shp')
+    points = []
+    
+    for j in range(array.shape[0]):
+        
+        x,y,z = t2.transform(array[j,1],array[j,0],0.0)
+        points.append((x,y))
+        
+    points.append(points[0])
+    
+    print('Number of points read',len(points))
     
     if option == 'Double grid':
     
@@ -540,13 +547,7 @@ def main(csv_file,option,dx_perc_overlap,
     
         double_grid = False
                    
-    
-    # print(points)
-    
-    #points = (read_shape(shape_file))
-    
-    #print(points)
-    
+        
     ln = LineString(points)
     minx, miny, maxx, maxy = ln.bounds
     
@@ -618,7 +619,7 @@ def main(csv_file,option,dx_perc_overlap,
         z_home = f(x_home,y_home)
         
         
-    waypoints_file = shape_file.replace('.shp','_')+'waypoint'
+    waypoints_file = csv_file.name.replace('.csv','_')+'waypoint'
                 
     distH1,xH1_in,yH1_in,zH1_in = create_grid(polygon,x_home,y_home,z_home,X_grid,Y_grid,Z_grid,
                                  x_photo,y_photo,h_flag=True,v_flag=False,first=0)    
@@ -878,7 +879,7 @@ if __name__ == '__main__':
             )
 
        
-            main(csv_file,option,dx_perc_overlap,
+            main(array,option,dx_perc_overlap,
                  dy_perc_overlap,cm_per_pixel,battery_time,
                  flight_speed,hovering_time,heading,home_side,
                  res_x,res_y,fov)
