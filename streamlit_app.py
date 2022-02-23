@@ -746,12 +746,12 @@ def main(array,option,dx_perc_overlap,
     layers.append(scatter_layer2)
 
     st.pydeck_chart(pdk.Deck(
-        map_style='mapbox://styles/mapbox/outdoors-v11',
+        map_style='mapbox://styles/mapbox/satellite-streets-v11',
         initial_view_state=pdk.ViewState(
             latitude=midpoint[0],
             longitude=midpoint[1],
             zoom=14,
-            pitch=20,),
+            pitch=0,),
             layers=layers
                 ,         ))
 
