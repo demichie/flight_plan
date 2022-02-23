@@ -800,7 +800,7 @@ if __name__ == '__main__':
      "Camera horizontal resolution (pixels)",1000,10000,4000)
 
     res_y = st.sidebar.slider(
-     "Camera vertical resolution (pixels)",1000,10000,4000)
+     "Camera vertical resolution (pixels)",1000,10000,3000)
 
     fov = st.sidebar.slider(
      "Camera field of view (pixels)",1.0,180.0,83.0)
