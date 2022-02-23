@@ -731,7 +731,7 @@ def main(array,option,dx_perc_overlap,
                   'ScatterplotLayer',
                   data=df,
                   get_position='[lon, lat]',
-                  get_color='[200, 30, 0, 160]',
+                  get_color='[200, 200, 200, 250]',
                   get_radius=1,)
 
     layers.append(scatter_layer1)
@@ -740,7 +740,7 @@ def main(array,option,dx_perc_overlap,
                   'ScatterplotLayer',
                   data=df2,
                   get_position='[lon, lat]',
-                  get_color='[100, 30, 100, 160]',
+                  get_color='[250, 250, 250, 255]',
                   get_radius=4,)
 
     layers.append(scatter_layer2)
