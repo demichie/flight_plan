@@ -751,7 +751,7 @@ def main(array,option,dx_perc_overlap,
             latitude=midpoint[0],
             longitude=midpoint[1],
             zoom=14,
-            pitch=50,),
+            pitch=20,),
             layers=layers
                 ,         ))
 
