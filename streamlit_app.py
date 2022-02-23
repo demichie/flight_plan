@@ -528,7 +528,7 @@ def main(csv_file,option,dx_perc_overlap,
 
     print('csv_file',csv_file.name)
     
-    points = read_csv(csv_file.name)
+    points = read_csv(csv_file)
 
     shape_file = csv_file.name.replace('.csv','.shp')
     
