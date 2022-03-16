@@ -12,7 +12,6 @@ import pandas as pd
 import pydeck as pdk
  
 import folium
-import streamlit as st
 from folium.plugins import Draw
 from streamlit_folium import st_folium
 #import plugins 
@@ -838,7 +837,7 @@ if __name__ == '__main__':
 
     coords = []
 
-    if output_map:
+    if output_map.get("all_drawings"):
 
         # print( 'len', len(output.get("all_drawings")) )
 
