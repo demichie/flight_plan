@@ -838,23 +838,25 @@ if __name__ == '__main__':
     coords = []
     area = 0.0
 
-    if output_map.get("all_drawings") is not None:
+    if output_map is not None:
 
-        # print( 'len', len(output.get("all_drawings")) )
+        if output_map.get("all_drawings") is not None:
 
-        if (output_map.get("all_drawings")[0]).get("features"):
-        
-            features = (output_map.get("all_drawings")[0]).get("features")
+            # print( 'len', len(output.get("all_drawings")) )
+
+            if (output_map.get("all_drawings")[0]).get("features"):
+         
+                features = (output_map.get("all_drawings")[0]).get("features")
     
-            for i in range(len(features)):
+                for i in range(len(features)):
         
-                typeGeo = features[i].get("geometry").get("type") 
+                    typeGeo = features[i].get("geometry").get("type") 
           
-                if typeGeo == "Polygon":
+                    if typeGeo == "Polygon":
              
-                    # print('i',i)
+                        # print('i',i)
         
-                    coords = features[i].get("geometry").get("coordinates")[0]
+                        coords = features[i].get("geometry").get("coordinates")[0]
 
 
     if coords:
