@@ -895,7 +895,7 @@ if __name__ == '__main__':
 
     cm_per_pixel = st.sidebar.number_input("Centimeters per pixel", min_value=0.1, max_value=None, value=2.0, step=0.1)
 
-    max_wpt = st.sidebar.number_input("Maximum number of waypoints for flight", min_value=10, max_value=None, value=10, step=1)
+    max_wpt = st.sidebar.number_input("Maximum number of waypoints for flight", min_value=10, max_value=None, value=95, step=1)
 
 
     battery_time = st.sidebar.slider(
