@@ -837,7 +837,7 @@ if __name__ == '__main__':
 
     coords = []
 
-    if output_map.get("all_drawings"):
+    if output_map.get("all_drawings") is not None:
 
         # print( 'len', len(output.get("all_drawings")) )
 
