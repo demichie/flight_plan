@@ -11,6 +11,16 @@ from matplotlib.pyplot import cm
 import pandas as pd
 import pydeck as pdk
  
+import folium
+import streamlit as st
+from folium.plugins import Draw
+from streamlit_folium import st_folium
+#import plugins 
+from folium import plugins 
+ 
+st.set_page_config(layout="wide")
+
+ 
 step_to_home = 100 # m 
     
 # when set to True, do not compute
@@ -18,8 +28,49 @@ step_to_home = 100 # m
 # obtain absolute elevation 
 agl_flag = True
 
+# Add custom base maps to folium
+basemaps = {
+    'Google Maps': folium.TileLayer(
+        tiles = 'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
+        attr = 'Google',
+        name = 'Google Maps',
+        overlay = True,
+        control = True
+    ),
+    'Google Satellite': folium.TileLayer(
+        tiles = 'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+        attr = 'Google',
+        name = 'Google Satellite',
+        overlay = True,
+        control = True
+    ),
+    'Google Terrain': folium.TileLayer(
+        tiles = 'https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',
+        attr = 'Google',
+        name = 'Google Terrain',
+        overlay = True,
+        control = True
+    ),
+    'Google Satellite Hybrid': folium.TileLayer(
+        tiles = 'https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',
+        attr = 'Google',
+        name = 'Google Satellite',
+        overlay = True,
+        control = True
+    ),
+    'Esri Satellite': folium.TileLayer(
+        tiles = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        attr = 'Esri',
+        name = 'Esri Satellite',
+        overlay = True,
+        control = True
+    )
+}
 
-def save_csv(x_in,y_in,z_in,x_home,y_home,z_home,waypoints_file):
+
+
+
+def save_csv(x_in,y_in,z_in,x_home,y_home,z_home,waypoints_file,max_wpt):
 
     csv_output_files = []
 
@@ -77,7 +128,7 @@ def save_csv(x_in,y_in,z_in,x_home,y_home,z_home,waypoints_file):
         time_to_home = dist_to_home / flight_speed
         # print('time,time_to_home',time,time_to_home)
                         
-        if ( time + time_to_home > battery_time * 60 ) or ( i_wpt > 95 ):
+        if ( time + time_to_home > battery_time * 60 ) or ( i_wpt > max_wpt ):
         
             # add intermediate point along the path to home 
             # this is done to follow to topography
@@ -508,7 +559,7 @@ def getGeoCoordinates(x, y):
 
 
 # convert_wgs_to_utm function, see https://stackoverflow.com/a/40140326/4556479
-def convert_wgs_to_utm(csv_file,lon: float, lat: float):
+def convert_wgs_to_utm(lon: float, lat: float):
 
     import math
     utm_band = str((math.floor((lon + 180) / 6 ) % 60) + 1)
@@ -521,12 +572,10 @@ def convert_wgs_to_utm(csv_file,lon: float, lat: float):
     return epsg_code
 
 
-def main(array,option,dx_perc_overlap,
+def main(array,csv_file,option,dx_perc_overlap,
                  dy_perc_overlap,cm_per_pixel,battery_time,
                  flight_speed,hovering_time,heading,home_side,
-                 res_x,res_y,fov):
-
-    print('csv_file',csv_file.name)
+                 res_x,res_y,fov,max_wpt):
     
     points = []
     
@@ -619,7 +668,7 @@ def main(array,option,dx_perc_overlap,
         z_home = f(x_home,y_home)
         
         
-    waypoints_file = csv_file.name.replace('.csv','_')+'waypoint'
+    waypoints_file = csv_file.replace('.csv','_')+'waypoint'
                 
     distH1,xH1_in,yH1_in,zH1_in = create_grid(polygon,x_home,y_home,z_home,X_grid,Y_grid,Z_grid,
                                  x_photo,y_photo,h_flag=True,v_flag=False,first=0)    
@@ -651,7 +700,7 @@ def main(array,option,dx_perc_overlap,
                                  distV2,xV2_in,yV2_in,zV2_in,
                                  x_home,y_home,z_home,double_grid)
 
-    csv_output_files = save_csv(x_in,y_in,z_in,x_home,y_home,z_home,waypoints_file)
+    csv_output_files = save_csv(x_in,y_in,z_in,x_home,y_home,z_home,waypoints_file,max_wpt)
         
     lat = []
     lon = []
@@ -732,7 +781,7 @@ def main(array,option,dx_perc_overlap,
                   data=df,
                   get_position='[lon, lat]',
                   get_color='[200, 200, 200, 250]',
-                  get_radius=1,)
+                  get_radius=2,)
 
     layers.append(scatter_layer1)
                   
@@ -740,7 +789,7 @@ def main(array,option,dx_perc_overlap,
                   'ScatterplotLayer',
                   data=df2,
                   get_position='[lon, lat]',
-                  get_color='[250, 250, 250, 255]',
+                  get_color='[230, 230, 230, 255]',
                   get_radius=4,)
 
     layers.append(scatter_layer2)
@@ -751,7 +800,8 @@ def main(array,option,dx_perc_overlap,
             latitude=midpoint[0],
             longitude=midpoint[1],
             zoom=14,
-            pitch=0,),
+            pitch=0,
+            height=600, width=900),
             layers=layers
                 ,         ))
 
@@ -765,7 +815,74 @@ def main(array,option,dx_perc_overlap,
     
 if __name__ == '__main__':
 
-    csv_file = st.sidebar.file_uploader("Select a .csv file", type='csv', accept_multiple_files=False)
+   
+    m = folium.Map(location=[39.949610, -75.150282], zoom_start=5)
+
+    # Add custom basemaps
+    basemaps['Google Maps'].add_to(m)
+    basemaps['Google Satellite Hybrid'].add_to(m)
+
+    # Add a layer control panel to the map.
+    m.add_child(folium.LayerControl())
+
+    #fullscreen
+    plugins.Fullscreen().add_to(m)
+
+    Draw(export=False,draw_options={'polygon': {'allowIntersection': False},
+                                'polyline': False,'rectangle':False,
+                                'circle': False, 'marker': False, 
+                                'circlemarker': False},).add_to(m)
+
+    output_map = st_folium(m, width=900, height=600)
+
+
+    coords = []
+
+    if output_map:
+
+        # print( 'len', len(output.get("all_drawings")) )
+
+        if (output_map.get("all_drawings")[0]).get("features"):
+        
+            features = (output_map.get("all_drawings")[0]).get("features")
+    
+            for i in range(len(features)):
+        
+                typeGeo = features[i].get("geometry").get("type") 
+          
+                if typeGeo == "Polygon":
+             
+                    # print('i',i)
+        
+                    coords = features[i].get("geometry").get("coordinates")[0]
+
+
+    if coords:
+
+        lat_coord = []
+        lon_coord = []
+
+        array = np.zeros((len(coords),2))
+
+        for coord in coords:
+
+            lat_coord.append(float(coord[0]))
+            lon_coord.append(float(coord[1]))
+
+
+        array[:,0] = lon_coord
+        array[:,1] = lat_coord
+
+        utm_code = convert_wgs_to_utm(lon_coord[0],lat_coord[0])    
+        proj = 'EPSG:'+utm_code
+        print('Projection',proj)   
+
+
+    # csv_file = st.sidebar.file_uploader("Select a .csv file", type='csv', accept_multiple_files=False)
+
+    csv_name = st.sidebar.text_input('Flight plan name', 'myFlight')
+    
+    csv_file = csv_name.replace(' ','_')+'.csv'
 
     option = st.sidebar.radio('Select the grid type:',
                   ['Single grid',
@@ -778,6 +895,9 @@ if __name__ == '__main__':
      "Vertical overlap percentage",1,99,50)
 
     cm_per_pixel = st.sidebar.number_input("Centimeters per pixel", min_value=0.1, max_value=None, value=2.0, step=0.1)
+
+    max_wpt = st.sidebar.number_input("Maximum number of waypoints for flight", min_value=10, max_value=None, value=10, step=1)
+
 
     battery_time = st.sidebar.slider(
      "Maximum duration of single flight",1,60,20)
@@ -861,11 +981,6 @@ if __name__ == '__main__':
     
         if csv_file is not None:
 
-            array = np.genfromtxt(csv_file, delimiter=',',skip_header=1)
-              
-            utm_code = convert_wgs_to_utm(csv_file,array[0,1],array[0,0])    
-            proj = 'EPSG:'+utm_code
-            print('Projection',proj)   
 
             t1 = Transformer.from_proj(
                 proj,'+proj=longlat +datum=WGS84 +no_defs +type=crs',
@@ -879,10 +994,10 @@ if __name__ == '__main__':
             )
 
        
-            main(array,option,dx_perc_overlap,
+            main(array,csv_file,option,dx_perc_overlap,
                  dy_perc_overlap,cm_per_pixel,battery_time,
                  flight_speed,hovering_time,heading,home_side,
-                 res_x,res_y,fov)
+                 res_x,res_y,fov,max_wpt)
             
         else:
         
