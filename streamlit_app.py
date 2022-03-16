@@ -731,7 +731,7 @@ def main(array,option,dx_perc_overlap,
                   'ScatterplotLayer',
                   data=df,
                   get_position='[lon, lat]',
-                  get_color='[200, 30, 0, 160]',
+                  get_color='[200, 200, 200, 250]',
                   get_radius=1,)
 
     layers.append(scatter_layer1)
@@ -740,18 +740,18 @@ def main(array,option,dx_perc_overlap,
                   'ScatterplotLayer',
                   data=df2,
                   get_position='[lon, lat]',
-                  get_color='[100, 30, 100, 160]',
+                  get_color='[250, 250, 250, 255]',
                   get_radius=4,)
 
     layers.append(scatter_layer2)
 
     st.pydeck_chart(pdk.Deck(
-        map_style='mapbox://styles/mapbox/light-v9',
+        map_style='mapbox://styles/mapbox/satellite-streets-v11',
         initial_view_state=pdk.ViewState(
             latitude=midpoint[0],
             longitude=midpoint[1],
             zoom=14,
-            pitch=50,),
+            pitch=0,),
             layers=layers
                 ,         ))
 
@@ -800,7 +800,7 @@ if __name__ == '__main__':
      "Camera horizontal resolution (pixels)",1000,10000,4000)
 
     res_y = st.sidebar.slider(
-     "Camera vertical resolution (pixels)",1000,10000,4000)
+     "Camera vertical resolution (pixels)",1000,10000,3000)
 
     fov = st.sidebar.slider(
      "Camera field of view (pixels)",1.0,180.0,83.0)
