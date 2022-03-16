@@ -902,11 +902,8 @@ if __name__ == '__main__':
         pts.append(pts[0])
 
         polygon = Polygon(pts[0:-1])
-
-        area = polygon.area
-
-        print('area',area)
-
+        
+        (minx, miny, maxx, maxy) = polygon.bounds
 
 
     # csv_file = st.sidebar.file_uploader("Select a .csv file", type='csv', accept_multiple_files=False)
@@ -968,6 +965,9 @@ if __name__ == '__main__':
     dy_photo = y_photo * ( 1.0 - dy_perc_overlap / 100.0 )
     
     dxy_photo = dx_photo*dy_photo
+    
+    area = np.abs((maxx-minx+x_photo)*(maxy-miny+y_photo))
+
     n_photo = area / dxy_photo
     if option == 'Double grid':
         n_photo *=2
