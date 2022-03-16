@@ -815,7 +815,7 @@ def main(array,csv_file,option,dx_perc_overlap,
 if __name__ == '__main__':
 
    
-    m = folium.Map(location=[42.81233, 10.31297], zoom_start=5)
+    m = folium.Map(location=[42.81233, 10.31297], zoom_start=12)
 
     # Add custom basemaps
     basemaps['Google Maps'].add_to(m)
