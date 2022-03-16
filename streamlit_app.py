@@ -836,6 +836,7 @@ if __name__ == '__main__':
 
 
     coords = []
+    area = 0.0
 
     if output_map.get("all_drawings") is not None:
 
@@ -872,7 +873,7 @@ if __name__ == '__main__':
         array[:,0] = lon_coord
         array[:,1] = lat_coord
 
-        utm_code = convert_wgs_to_utm(lon_coord[0],lat_coord[0])    
+        utm_code = convert_wgs_to_utm(lat_coord[0],lon_coord[0])    
         proj = 'EPSG:'+utm_code
         print('Projection',proj)   
         
@@ -964,7 +965,11 @@ if __name__ == '__main__':
     
     dxy_photo = dx_photo*dy_photo
     n_photo = area / dxy_photo
+    if option == 'Double grid':
+        n_photo *=2
+        
     print('n_photo',n_photo)
+    st.text('Approx. number of photos: '+str(int(np.floor(n_photo))))
     
     x_pic = [ -0.5*x_photo,0.5*x_photo,0.5*x_photo,-0.5*x_photo,-0.5*x_photo]
     y_pic = [ -0.5*y_photo,-0.5*y_photo,0.5*y_photo,0.5*y_photo,-0.5*y_photo]
@@ -1009,7 +1014,8 @@ if __name__ == '__main__':
 
     if st.sidebar.button('Run'):
     
-        if csv_file is not None:
+    
+        if n_photo < 500:
 
 
             t1 = Transformer.from_proj(
@@ -1031,7 +1037,7 @@ if __name__ == '__main__':
             
         else:
         
-            print('Select csv file first')    
+            print('The number of photo for the selected area is too large. Increase cm per pixel')    
     
     
     
