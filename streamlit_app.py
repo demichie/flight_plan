@@ -830,7 +830,9 @@ if __name__ == '__main__':
     Draw(export=False,draw_options={'polygon': {'allowIntersection': False},
                                 'polyline': False,'rectangle':False,
                                 'circle': False, 'marker': False, 
-                                'circlemarker': False},).add_to(m)
+                                'circlemarker': False},
+                      edit: {featureGroup: editableLayers,edit: false},
+        ).add_to(m)
 
     output_map = st_folium(m, width=900, height=600)
 
