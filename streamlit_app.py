@@ -1014,8 +1014,11 @@ if __name__ == '__main__':
 
     if st.sidebar.button('Run'):
     
-    
-        if n_photo < 500:
+        if n_photo == 0:
+        
+            st.text('Draw a polygon on the map with the tool')
+
+        elif n_photo < 500:
 
 
             t1 = Transformer.from_proj(
@@ -1037,7 +1040,7 @@ if __name__ == '__main__':
             
         else:
         
-            print('The number of photo for the selected area is too large. Increase cm per pixel')    
+            st.text('The number of photo for the selected area is too large. Increase cm per pixel')    
     
     
     
