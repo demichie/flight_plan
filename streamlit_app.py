@@ -831,7 +831,7 @@ if __name__ == '__main__':
                                 'polyline': False,'rectangle':False,
                                 'circle': False, 'marker': False, 
                                 'circlemarker': False},
-                      edit: {featureGroup: editableLayers,edit: false},
+                      edit_options={'edit': False},
         ).add_to(m)
 
     output_map = st_folium(m, width=900, height=600)
