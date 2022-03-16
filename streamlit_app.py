@@ -902,7 +902,7 @@ if __name__ == '__main__':
         pts.append(pts[0])
 
         polygon = Polygon(pts[0:-1])
-        
+        area = polygon.area
         (minx, miny, maxx, maxy) = polygon.bounds
 
 
@@ -966,14 +966,16 @@ if __name__ == '__main__':
     
     dxy_photo = dx_photo*dy_photo
     
-    area = np.abs((maxx-minx+x_photo)*(maxy-miny+y_photo))
+    if ( area > 0 ):
+    
+        area = np.abs((maxx-minx+x_photo)*(maxy-miny+y_photo))
 
-    n_photo = area / dxy_photo
-    if option == 'Double grid':
-        n_photo *=2
+        n_photo = area / dxy_photo
+        if option == 'Double grid':
+            n_photo *=2
         
-    print('n_photo',n_photo)
-    st.text('Approx. number of photos: '+str(int(np.floor(n_photo))))
+        print('n_photo',n_photo)
+        st.text('Approx. number of photos: '+str(int(np.floor(n_photo))))
     
     x_pic = [ -0.5*x_photo,0.5*x_photo,0.5*x_photo,-0.5*x_photo,-0.5*x_photo]
     y_pic = [ -0.5*y_photo,-0.5*y_photo,0.5*y_photo,0.5*y_photo,-0.5*y_photo]
