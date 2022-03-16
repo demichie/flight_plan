@@ -815,7 +815,7 @@ def main(array,csv_file,option,dx_perc_overlap,
 if __name__ == '__main__':
 
    
-    m = folium.Map(location=[45.372, -121.6972], zoom_start=12)
+    m = folium.Map(location=[42.81233, 10.31297], zoom_start=12)
 
     # Add custom basemaps
     basemaps['Google Maps'].add_to(m)
@@ -875,6 +875,33 @@ if __name__ == '__main__':
         utm_code = convert_wgs_to_utm(lon_coord[0],lat_coord[0])    
         proj = 'EPSG:'+utm_code
         print('Projection',proj)   
+        
+        t1 = Transformer.from_proj(
+                proj,'+proj=longlat +datum=WGS84 +no_defs +type=crs',
+                always_xy=True,
+            )
+
+        t2 = Transformer.from_proj(
+                '+proj=longlat +datum=WGS84 +no_defs +type=crs',
+                proj,
+                always_xy=True,
+            )
+            
+        pts = []    
+            
+        for j in range(array.shape[0]):
+        
+            x,y,z = t2.transform(array[j,1],array[j,0],0.0)
+            pts.append((x,y))
+        
+        pts.append(pts[0])
+
+        polygon = Polygon(pts[0:-1])
+
+        area = polygon.area
+
+        print('area',area)
+
 
 
     # csv_file = st.sidebar.file_uploader("Select a .csv file", type='csv', accept_multiple_files=False)
@@ -934,6 +961,10 @@ if __name__ == '__main__':
     
     dx_photo = x_photo * ( 1.0 - dx_perc_overlap / 100.0 )
     dy_photo = y_photo * ( 1.0 - dy_perc_overlap / 100.0 )
+    
+    dxy_photo = dx_photo*dy_photo
+    n_photo = area / dxy_photo
+    print('n_photo',n_photo)
     
     x_pic = [ -0.5*x_photo,0.5*x_photo,0.5*x_photo,-0.5*x_photo,-0.5*x_photo]
     y_pic = [ -0.5*y_photo,-0.5*y_photo,0.5*y_photo,0.5*y_photo,-0.5*y_photo]
