@@ -50,7 +50,7 @@ basemaps = {
         attr = 'Google',
         name = 'Google Terrain',
         overlay = True,
-        control = True
+        control = True,
         show = False
     ),
     'Google Satellite Hybrid': folium.TileLayer(
