@@ -34,14 +34,16 @@ basemaps = {
         attr = 'Google',
         name = 'Google Maps',
         overlay = True,
-        control = True
+        control = True,
+        show = False
     ),
     'Google Satellite': folium.TileLayer(
         tiles = 'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
         attr = 'Google',
         name = 'Google Satellite',
         overlay = True,
-        control = True
+        control = True,
+        show = False
     ),
     'Google Terrain': folium.TileLayer(
         tiles = 'https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',
@@ -49,13 +51,15 @@ basemaps = {
         name = 'Google Terrain',
         overlay = True,
         control = True
+        show = False
     ),
     'Google Satellite Hybrid': folium.TileLayer(
         tiles = 'https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',
         attr = 'Google',
         name = 'Google Satellite',
         overlay = True,
-        control = True
+        control = True,
+        show = False
     ),
     'Esri Satellite': folium.TileLayer(
         tiles = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
@@ -820,6 +824,7 @@ if __name__ == '__main__':
     # Add custom basemaps
     basemaps['Google Maps'].add_to(m)
     basemaps['Google Satellite Hybrid'].add_to(m)
+    basemaps['Google Terrain'].add_to(m)
 
     # Add a layer control panel to the map.
     m.add_child(folium.LayerControl())
